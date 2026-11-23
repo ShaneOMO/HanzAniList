@@ -1,0 +1,23 @@
+{
+  "name": "hanz-anilist",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AniList 简体中文界面与作品译名扩展",
+  "scripts": {
+    "dev": "wxt",
+    "build": "wxt build",
+    "zip": "wxt zip",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "titles:build": "node scripts/build-titles.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "happy-dom": "^21.0.4",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18",
+    "wxt": "^0.21.5"
+  }
+}

@@ -1,0 +1,10 @@
+node_modules/
+.tools/
+.output/
+.wxt/
+dist/
+playwright-report/
+test-results/
+*.zip
+data/.upstream-titles.json
+.DS_Store

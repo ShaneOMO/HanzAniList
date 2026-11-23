@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HanzAniList 设置</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main>
+      <p class="eyebrow">HANZ ANILIST</p>
+      <h1>AniList 简体中文</h1>
+      <p class="intro">界面与作品名汉化。作品译名来自本地分片数据库，浏览页面不会请求 AniList API。</p>
+      <form id="settings">
+        <label><span><strong>汉化网站界面</strong><small>导航、按钮、筛选项与作品状态</small></span><input name="uiTranslation" type="checkbox" /></label>
+        <label><span><strong>显示中文作品名</strong><small>根据作品 ID 查询离线译名库</small></span><input name="titleTranslation" type="checkbox" /></label>
+        <label><span><strong>同时显示原名</strong><small>以“中文名 · 原名”的双语形式展示</small></span><input name="showOriginal" type="checkbox" /></label>
+        <label><span><strong>允许 AI 暂译</strong><small>仅显示数据库中明确标记的 AI 暂译</small></span><input name="aiTranslations" type="checkbox" /></label>
+      </form>
+      <p id="status" role="status"></p>
+      <p class="note">保存后刷新已打开的 AniList 页面即可应用。将鼠标悬停在中文作品名上，可查看原名、别名和译名来源。</p>
+      <a href="https://github.com/soruly/anilist-chinese" target="_blank" rel="noopener noreferrer">初始译名数据与署名</a>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
