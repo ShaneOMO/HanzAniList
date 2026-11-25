@@ -14,12 +14,13 @@
       <form id="settings">
         <label><span><strong>汉化网站界面</strong><small>导航、按钮、筛选项与作品状态</small></span><input name="uiTranslation" type="checkbox" /></label>
         <label><span><strong>显示中文作品名</strong><small>根据作品 ID 查询离线译名库</small></span><input name="titleTranslation" type="checkbox" /></label>
+        <label><span><strong>Bangumi 在线匹配</strong><small>仅对数据库缺失作品按日文原名查询；默认开启，不调用 AI</small></span><input name="bangumiSearch" type="checkbox" /></label>
         <label><span><strong>同时显示原名</strong><small>以“中文名 · 原名”的双语形式展示</small></span><input name="showOriginal" type="checkbox" /></label>
         <label><span><strong>允许 AI 暂译</strong><small>仅显示数据库中明确标记的 AI 暂译</small></span><input name="aiTranslations" type="checkbox" /></label>
       </form>
       <p id="status" role="status"></p>
       <p class="note">保存后刷新已打开的 AniList 页面即可应用。将鼠标悬停在中文作品名上，可查看原名、别名和译名来源。</p>
-      <a href="https://github.com/soruly/anilist-chinese" target="_blank" rel="noopener noreferrer">初始译名数据与署名</a>
+      <a href="https://github.com/ShaneOMO/HanzAniList/blob/main/data/titles.json" target="_blank" rel="noopener noreferrer">项目自维护译名库</a>
     </main>
     <script type="module" src="./main.ts"></script>
   </body>

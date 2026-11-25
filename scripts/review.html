@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HanzAniList 译名维护</title>
+  <style>
+    :root { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; color: #eaf3fb; background: #0b1622; }
+    body { margin: 0; } main { width: min(1000px, calc(100% - 32px)); margin: 40px auto; }
+    h1 { margin-bottom: 6px; } .intro { color: #9eb1c2; }
+    article { margin: 18px 0; padding: 22px; border: 1px solid #2a4153; border-radius: 12px; background: #122231; }
+    .original, .meta { color: #a9bdcb; line-height: 1.6; } .mode { color: #7cc1ff; }
+    label { display: block; margin: 14px 0 5px; color: #b9c9d6; }
+    input, select { box-sizing: border-box; width: 100%; padding: 10px 12px; border: 1px solid #3b5367; border-radius: 6px; background: #0b1723; color: #fff; font-size: 16px; }
+    button { margin: 16px 8px 0 0; padding: 9px 20px; border: 0; border-radius: 6px; cursor: pointer; }
+    .approve { background: #3fa873; color: #fff; } .reject { background: #33495b; color: #fff; }
+    a { color: #65b8ff; } #status { color: #80d9aa; }
+  </style>
+</head>
+<body><main>
+  <h1>译名维护</h1>
+  <p class="intro">AI 候选确认后才写入正式库。Bangumi 高置信匹配已在同步时直接入库。此页面只监听本机。</p>
+  <p id="status" role="status"></p><div id="queue"></div>
+</main><script>
+const container = document.querySelector('#queue');
+const status = document.querySelector('#status');
+function field(labelText, value) {
+  const label = document.createElement('label'); label.textContent = labelText;
+  const input = document.createElement('input'); input.value = value; label.append(input); return input;
+}
+async function load() {
+  const items = await (await fetch('/api/queue')).json(); container.replaceChildren();
+  if (!items.length) { container.textContent = '暂无待确认译名。'; return; }
+  for (const item of items) {
+    const card = document.createElement('article');
+    const heading = document.createElement('h2'); heading.textContent = `${item.id} · ${item.candidate.title}`;
+    const original = document.createElement('div'); original.className = 'original';
+    original.textContent = Object.values(item.media.title).filter(Boolean).join(' / ');
+    const meta = document.createElement('div'); meta.className = 'meta';
+    meta.textContent = `${item.media.type === 'ANIME' ? '动画' : '漫画'} · ${item.media.startDate?.year ?? '年份未知'} · `;
+    const mode = document.createElement('span'); mode.className = 'mode';
+    mode.textContent = item.candidate.mode === 'web' ? 'AI 联网检索' : 'AI 暂译'; meta.append(mode);
+    card.append(heading, original, meta);
+    if (item.candidate.evidenceUrl) {
+      const link = document.createElement('a'); link.href = item.candidate.evidenceUrl; link.target = '_blank';
+      link.rel = 'noopener noreferrer'; link.textContent = '查看证据来源'; card.append(link);
+    }
+    const title = field('正式中文名', item.candidate.title);
+    const aliases = field('其他别名（用中文分号隔开）', (item.candidate.aliases ?? []).join('；'));
+    const typeLabel = document.createElement('label'); typeLabel.textContent = '来源级别';
+    const sourceType = document.createElement('select');
+    for (const [value, text] of [['community', '民间／常用译名'], ['official', '官方译名'], ['ai', 'AI 暂译']]) {
+      const option = document.createElement('option'); option.value = value; option.textContent = text; sourceType.append(option);
+    }
+    sourceType.value = item.candidate.mode === 'web' ? 'community' : 'ai'; typeLabel.append(sourceType);
+    card.append(title.parentElement, aliases.parentElement, typeLabel);
+    const approve = document.createElement('button'); approve.className = 'approve'; approve.textContent = '确认入库';
+    const reject = document.createElement('button'); reject.className = 'reject'; reject.textContent = '拒绝并冷却 90 天';
+    async function submit(action, data) {
+      const response = await fetch(`/api/${action}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      const result = await response.json(); if (!response.ok) throw new Error(result.error);
+      status.textContent = action === 'approve' ? `已确认：${data.title}` : `已拒绝：${item.id}`; await load();
+    }
+    approve.onclick = () => submit('approve', { id: item.id, title: title.value, aliases: aliases.value.split(/[；;]/), sourceType: sourceType.value }).catch(error => status.textContent = error.message);
+    reject.onclick = () => submit('reject', { id: item.id }).catch(error => status.textContent = error.message);
+    card.append(approve, reject); container.append(card);
+  }
+}
+load().catch(error => status.textContent = error.message);
+</script></body></html>

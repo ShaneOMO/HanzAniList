@@ -26,13 +26,17 @@ test.afterAll(async () => {
 
 test("translates static and dynamic titles without AniList API requests", async () => {
   const page = await context.newPage();
+  await context.route("https://api.bgm.tv/**", (route) => route.fulfill({
+    contentType: "application/json",
+    body: JSON.stringify({ data: [{ id: 999001, name: "確認テスト", name_cn: "确认测试", type: 2 }] }),
+  }));
   const apiRequests: string[] = [];
   page.on("request", (request) => {
     if (request.url().includes("graphql.anilist.co")) apiRequests.push(request.url());
   });
   await page.route("https://anilist.co/anime/16498/**", (route) => route.fulfill({
     contentType: "text/html",
-    body: `<!doctype html><html><body><nav>Overview</nav><h1>Attack on Titan</h1><a href="/anime/1535/Death-Note/"><span class="title">Death Note</span></a><div id="mount"></div></body></html>`,
+    body: `<!doctype html><html><body><nav>Overview</nav><input id="filter" placeholder="Filter"><h1>Attack on Titan</h1><a href="/anime/1535/Death-Note/"><span class="title">Death Note</span></a><div id="mount"></div></body></html>`,
   }));
   await page.goto("https://anilist.co/anime/16498/Shingeki-no-Kyojin/");
   await expect(page.locator("h1")).toHaveText("进击的巨人");
@@ -48,6 +52,22 @@ test("translates static and dynamic titles without AniList API requests", async 
     document.querySelector("#mount")!.append(link);
   });
   await expect(page.locator("#mount a")).toHaveText("航海王");
+  await page.evaluate(() => {
+    document.querySelector("nav")!.textContent = "anime list";
+    document.querySelector("input")!.placeholder = "Write a status...";
+    const activity = document.createElement("p");
+    activity.textContent = "4 hours ago";
+    document.querySelector("#mount")!.append(activity);
+    const unknown = document.createElement("a");
+    unknown.id = "unknown-title";
+    unknown.href = "/anime/999001/test";
+    unknown.textContent = "確認テスト";
+    document.querySelector("#mount")!.append(unknown);
+  });
+  await expect(page.locator("nav")).toHaveText("动画列表");
+  await expect(page.locator("#filter")).toHaveAttribute("placeholder", "发布一条动态……");
+  await expect(page.locator("#mount p")).toHaveText("4 小时前");
+  await expect(page.locator("#unknown-title")).toHaveText("确认测试");
   expect(apiRequests).toEqual([]);
 });
 

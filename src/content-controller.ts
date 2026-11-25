@@ -1,5 +1,5 @@
-import type { Settings } from "./types";
-import type { TitleRepository } from "./title-repository";
+import type { Settings, TitleRecord } from "./types";
+import type { TitleProvider } from "./title-provider";
 import { applyTitle, findTitleTargets } from "./title-renderer";
 import { translateTree } from "./ui-translator";
 
@@ -9,7 +9,7 @@ export class ContentController {
 
   constructor(
     private readonly settings: Settings,
-    private readonly repository: TitleRepository,
+    private readonly titles: TitleProvider,
     private readonly window: Window,
   ) {}
 
@@ -17,12 +17,27 @@ export class ContentController {
     this.process(this.window.document);
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
+        if (mutation.type === "characterData") {
+          if (mutation.target.parentElement) this.schedule(mutation.target.parentElement);
+          continue;
+        }
+        if (mutation.type === "attributes") {
+          this.schedule(mutation.target as Element);
+          continue;
+        }
         for (const node of mutation.addedNodes) {
           if (node instanceof Element || node instanceof DocumentFragment) this.schedule(node);
+          else if (node instanceof Text && node.parentElement) this.schedule(node.parentElement);
         }
       }
     });
-    observer.observe(this.window.document.body, { childList: true, subtree: true });
+    observer.observe(this.window.document.body, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+      attributes: true,
+      attributeFilter: ["placeholder", "aria-label"],
+    });
   }
 
   schedule(root: ParentNode): void {
@@ -32,7 +47,8 @@ export class ContentController {
       this.frame = undefined;
       const batch = [...this.pending];
       this.pending.clear();
-      for (const root of batch) this.process(root);
+      const roots = batch.filter((root) => !batch.some((other) => other !== root && (other as Node).contains(root as Node)));
+      for (const root of roots) this.process(root);
     });
   }
 
@@ -40,20 +56,24 @@ export class ContentController {
     if (this.settings.uiTranslation) translateTree(root);
     if (!this.settings.titleTranslation) return;
     const targets = findTitleTargets(root, this.window.location.pathname);
-    this.runLimited(targets, 6, async ({ id, element }) => {
-      const record = await this.repository.get(id);
-      if (record && element.isConnected) applyTitle(element, record, this.settings);
+    if (!targets.length) return;
+    this.titles.getMany(targets.map((target) => target.id)).then(async (records) => {
+      const render = (items: typeof targets, titles: Map<number, TitleRecord>) => {
+        for (const { id, element } of items) {
+          const record = titles.get(id);
+          if (record && element.isConnected) applyTitle(element, record, this.settings);
+        }
+      };
+      render(targets, records);
+      if (!this.settings.bangumiSearch) return;
+      const missing = targets.filter((target) => !records.has(target.id)).map((target) => ({
+        id: target.id,
+        type: target.type,
+        title: target.element.dataset.hanzOriginal ?? target.element.textContent?.trim() ?? "",
+      })).filter((target) => target.title);
+      if (!missing.length) return;
+      const resolved = await this.titles.resolveBangumi(missing);
+      render(targets, resolved);
     }).catch(() => undefined);
-  }
-
-  private async runLimited<T>(items: T[], limit: number, task: (item: T) => Promise<void>): Promise<void> {
-    let index = 0;
-    const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
-      while (index < items.length) {
-        const item = items[index++]!;
-        await task(item);
-      }
-    });
-    await Promise.all(workers);
   }
 }

@@ -26,7 +26,7 @@ export class TitleTooltip {
     original.textContent = target.dataset.hanzOriginal ?? "";
     const source = this.document.createElement("a");
     source.textContent = target.dataset.hanzSource ?? "";
-    source.href = target.dataset.hanzSourceUrl ?? "https://github.com/soruly/anilist-chinese";
+    source.href = target.dataset.hanzSourceUrl || "https://github.com/ShaneOMO/HanzAniList/blob/main/data/titles.json";
     source.target = "_blank";
     source.rel = "noopener noreferrer";
     this.element.append(title, original, source);

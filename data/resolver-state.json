@@ -1,0 +1,22 @@
+{
+  "1": {
+    "hash": "[1,\"ANIME\",{\"romaji\":\"Cowboy Bebop\",\"english\":\"Cowboy Bebop\",\"native\":\"カウボーイビバップ\"},1998]",
+    "status": "approved",
+    "checkedAt": "2026-11-24T05:51:39.253Z"
+  },
+  "20": {
+    "hash": "[20,\"ANIME\",{\"romaji\":\"NARUTO\",\"english\":\"Naruto\",\"native\":\"NARUTO -ナルト-\"},2002]",
+    "status": "approved",
+    "checkedAt": "2026-11-24T05:51:40.494Z"
+  },
+  "30002": {
+    "hash": "[30002,\"MANGA\",{\"romaji\":\"Berserk\",\"english\":\"Berserk\",\"native\":\"ベルセルク\"},1989]",
+    "status": "approved",
+    "checkedAt": "2026-11-24T05:51:41.233Z"
+  },
+  "176314": {
+    "hash": "[176314,\"ANIME\",{\"romaji\":\"Sasaki to Pii-chan Season 2\",\"english\":\"Sasaki and Peeps Season 2\",\"native\":\"佐々木とピーちゃん シーズン２\"},2026]",
+    "status": "approved",
+    "checkedAt": "2026-11-25T06:23:11.771Z"
+  }
+}

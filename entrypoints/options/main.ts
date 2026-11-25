@@ -3,7 +3,7 @@ import type { Settings } from "../../src/types";
 
 const form = document.querySelector<HTMLFormElement>("#settings")!;
 const status = document.querySelector<HTMLParagraphElement>("#status")!;
-const keys: Array<keyof Settings> = ["uiTranslation", "titleTranslation", "showOriginal", "aiTranslations"];
+const keys: Array<keyof Settings> = ["uiTranslation", "titleTranslation", "bangumiSearch", "showOriginal", "aiTranslations"];
 const settings = await getSettings();
 
 for (const key of keys) {

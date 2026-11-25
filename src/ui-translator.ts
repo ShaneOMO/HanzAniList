@@ -2,13 +2,20 @@ import { dynamicTranslations, uiDictionary } from "./ui-dictionary";
 
 const skippedTags = new Set(["CODE", "INPUT", "NOSCRIPT", "PRE", "SCRIPT", "STYLE", "TEXTAREA"]);
 
+const caseInsensitiveDictionary = new Map(
+  Object.entries(uiDictionary).map(([key, value]) => [key.toLocaleLowerCase("en"), value]),
+);
+
 export function translateText(value: string): string | undefined {
-  const trimmed = value.trim();
-  if (!trimmed) return undefined;
-  const translated = uiDictionary[trimmed] ?? uiDictionary[trimmed.replace(/:$/, "")];
-  if (translated) return value.replace(trimmed, trimmed.endsWith(":") ? `${translated}：` : translated);
+  const raw = value.trim();
+  if (!raw) return undefined;
+  const trimmed = raw.replace(/\s+/g, " ");
+  const translated = uiDictionary[trimmed]
+    ?? caseInsensitiveDictionary.get(trimmed.toLocaleLowerCase("en"))
+    ?? caseInsensitiveDictionary.get(trimmed.replace(/:$/, "").toLocaleLowerCase("en"));
+  if (translated) return value.replace(raw, trimmed.endsWith(":") ? `${translated}：` : translated);
   for (const [pattern, replacement] of dynamicTranslations) {
-    if (pattern.test(trimmed)) return value.replace(trimmed, trimmed.replace(pattern, replacement));
+    if (pattern.test(trimmed)) return value.replace(raw, trimmed.replace(pattern, replacement));
   }
   return undefined;
 }
@@ -31,10 +38,16 @@ export function translateTree(root: ParentNode): void {
   }
   for (const change of changes) change.node.data = change.value;
 
-  const elements = root.querySelectorAll("input[placeholder], textarea[placeholder]");
+  const selector = "input[placeholder], textarea[placeholder], [aria-label]";
+  const elements = [
+    ...(root instanceof Element && root.matches(selector) ? [root] : []),
+    ...root.querySelectorAll(selector),
+  ];
   for (const element of elements) {
-    const placeholder = element.getAttribute("placeholder");
-    const translated = placeholder ? uiDictionary[placeholder.trim()] : undefined;
-    if (translated) element.setAttribute("placeholder", translated);
+    for (const attribute of ["placeholder", "aria-label"]) {
+      const value = element.getAttribute(attribute);
+      const translated = value ? translateText(value) : undefined;
+      if (translated) element.setAttribute(attribute, translated.trim());
+    }
   }
 }

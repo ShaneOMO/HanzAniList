@@ -11,6 +11,7 @@ export interface TitleRecord {
 export interface Settings {
   uiTranslation: boolean;
   titleTranslation: boolean;
+  bangumiSearch: boolean;
   showOriginal: boolean;
   aiTranslations: boolean;
 }
@@ -18,6 +19,7 @@ export interface Settings {
 export const defaultSettings: Settings = {
   uiTranslation: true,
   titleTranslation: true,
+  bangumiSearch: true,
   showOriginal: false,
   aiTranslations: true,
 };

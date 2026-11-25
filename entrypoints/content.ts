@@ -1,7 +1,7 @@
 import "./content/style.css";
 import { ContentController } from "../src/content-controller";
 import { getSettings } from "../src/settings";
-import { TitleRepository } from "../src/title-repository";
+import { TitleClient } from "../src/title-client";
 import { TitleTooltip } from "../src/title-tooltip";
 
 export default defineContentScript({
@@ -11,6 +11,6 @@ export default defineContentScript({
     const settings = await getSettings();
     if (!settings.uiTranslation && !settings.titleTranslation) return;
     new TitleTooltip(document);
-    new ContentController(settings, new TitleRepository(), window).start();
+    new ContentController(settings, new TitleClient(), window).start();
   },
 });

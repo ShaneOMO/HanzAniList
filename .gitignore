@@ -6,5 +6,4 @@ dist/
 playwright-report/
 test-results/
 *.zip
-data/.upstream-titles.json
 .DS_Store

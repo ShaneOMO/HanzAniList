@@ -1,0 +1,104 @@
+[
+  {
+    "id": 1,
+    "title": "星际牛仔",
+    "aliases": [],
+    "source": {
+      "type": "community",
+      "provider": "bangumi",
+      "name": "Bangumi",
+      "url": "https://bgm.tv/subject/253"
+    },
+    "updatedAt": "2026-11-24T05:51:39.250Z"
+  },
+  {
+    "id": 20,
+    "title": "火影忍者",
+    "aliases": [],
+    "source": {
+      "type": "community",
+      "provider": "bangumi",
+      "name": "Bangumi",
+      "url": "https://bgm.tv/subject/3425"
+    },
+    "updatedAt": "2026-11-24T05:51:40.492Z"
+  },
+  {
+    "id": 21,
+    "title": "航海王",
+    "aliases": [
+      "海贼王"
+    ],
+    "source": {
+      "type": "official",
+      "provider": "manual",
+      "name": "东立出版社／爱奇艺",
+      "url": "https://www.iqiyi.com/a_19rrhb3xdt.html"
+    },
+    "updatedAt": "2026-11-24T00:00:00.000Z"
+  },
+  {
+    "id": 1535,
+    "title": "死亡笔记",
+    "aliases": [
+      "Death Note"
+    ],
+    "source": {
+      "type": "official",
+      "provider": "manual",
+      "name": "东立出版社",
+      "url": "https://www.tongli.com.tw/BooksDetail.aspx?Bd=HA00501"
+    },
+    "updatedAt": "2026-11-24T00:00:00.000Z"
+  },
+  {
+    "id": 16498,
+    "title": "进击的巨人",
+    "aliases": [],
+    "source": {
+      "type": "official",
+      "provider": "manual",
+      "name": "东立出版社",
+      "url": "https://www.tongli.com.tw/BooksDetail.aspx?Bd=JC0370001"
+    },
+    "updatedAt": "2026-11-24T00:00:00.000Z"
+  },
+  {
+    "id": 30002,
+    "title": "剑风传奇",
+    "aliases": [],
+    "source": {
+      "type": "community",
+      "provider": "bangumi",
+      "name": "Bangumi",
+      "url": "https://bgm.tv/subject/9640"
+    },
+    "updatedAt": "2026-11-24T05:51:41.231Z"
+  },
+  {
+    "id": 30013,
+    "title": "航海王",
+    "aliases": [
+      "海贼王"
+    ],
+    "source": {
+      "type": "official",
+      "provider": "manual",
+      "name": "东立出版社",
+      "url": "https://www.tongli.com.tw/BooksDetail.aspx?Bd=JA00101"
+    },
+    "updatedAt": "2026-11-24T00:00:00.000Z"
+  },
+  {
+    "id": 176314,
+    "title": "佐佐木与文鸟小哔 第二季",
+    "aliases": [],
+    "source": {
+      "type": "community",
+      "provider": "bangumi",
+      "name": "Bangumi",
+      "url": "https://bgm.tv/subject/486456"
+    },
+    "updatedAt": "2026-11-25T06:23:11.768Z"
+  }
+]
